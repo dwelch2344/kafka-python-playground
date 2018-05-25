@@ -1,12 +1,24 @@
-import sys
+import sys, getopt
 
 from confluent_kafka import Consumer, KafkaError, TopicPartition, OFFSET_BEGINNING
 
 if __name__ == '__main__':
+
+    optlist, argv = getopt.getopt(sys.argv[1:], 'g:')
+
+    consumerGroup = 'consumer1'
+
+    for opt in optlist:
+        if opt[0] == '-g':
+            consumerGroup = opt[1]
+
+
+    print 'Consumer group: %s' % consumerGroup
+
     topic = "%s" % 'example1'
     conf = {
         'bootstrap.servers': 'localhost:9092',
-        'group.id': 'consumer1',
+        'group.id': consumerGroup,
         'default.topic.config': {'auto.offset.reset': 'smallest'}
     }
 
