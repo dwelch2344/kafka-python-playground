@@ -1,6 +1,8 @@
-import sys, getopt
+import getopt
+import sys
+import pickle
 
-from confluent_kafka import Consumer, KafkaError, TopicPartition, OFFSET_BEGINNING
+from confluent_kafka import Consumer, KafkaError
 
 if __name__ == '__main__':
 
@@ -11,7 +13,6 @@ if __name__ == '__main__':
     for opt in optlist:
         if opt[0] == '-g':
             consumerGroup = opt[1]
-
 
     print 'Consumer group: %s' % consumerGroup
 
@@ -25,8 +26,6 @@ if __name__ == '__main__':
     c = Consumer(conf)
     c.subscribe([topic])
     # c.seek(TopicPartition(topic, 0, OFFSET_BEGINNING))
-
-
 
     print("About to start...")
     while True:
@@ -43,6 +42,7 @@ if __name__ == '__main__':
                 print(msg.error())
                 break
 
-        print('Received message: {}'.format(msg.value().decode('utf-8')))
+        val = pickle.loads(msg.value())
+        print('Received message: {}'.format(val))
 
     c.close()
